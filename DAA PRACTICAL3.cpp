@@ -1,90 +1,92 @@
 #include <iostream>
 #include <vector>
-#include <chrono>
 #include <algorithm>
+#include <chrono>
 
 using namespace std;
 using namespace chrono;
 
-//------------------ MAX HEAP ------------------//
-void maxHeapify(vector<int> &arr, int n, int i)
+// Max Heapify
+void maxHeapify(vector<int>& a, int n, int i)
 {
     int largest = i;
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
 
-    if (left < n && arr[left] > arr[largest])
-        largest = left;
+    if (l < n && a[l] > a[largest])
+        largest = l;
 
-    if (right < n && arr[right] > arr[largest])
-        largest = right;
+    if (r < n && a[r] > a[largest])
+        largest = r;
 
     if (largest != i)
     {
-        swap(arr[i], arr[largest]);
-        maxHeapify(arr, n, largest);
+        swap(a[i], a[largest]);
+        maxHeapify(a, n, largest);
     }
 }
 
-void maxHeapSort(vector<int> &arr)
+// Max Heap Sort
+void maxHeapSort(vector<int>& a)
 {
-    int n = arr.size();
+    int n = a.size();
 
     for (int i = n / 2 - 1; i >= 0; i--)
-        maxHeapify(arr, n, i);
+        maxHeapify(a, n, i);
 
     for (int i = n - 1; i > 0; i--)
     {
-        swap(arr[0], arr[i]);
-        maxHeapify(arr, i, 0);
+        swap(a[0], a[i]);
+        maxHeapify(a, i, 0);
     }
 }
 
-//------------------ MIN HEAP ------------------//
-void minHeapify(vector<int> &arr, int n, int i)
+// Min Heapify
+void minHeapify(vector<int>& a, int n, int i)
 {
-    int smallest = i;
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
+    int small = i;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
 
-    if (left < n && arr[left] < arr[smallest])
-        smallest = left;
+    if (l < n && a[l] < a[small])
+        small = l;
 
-    if (right < n && arr[right] < arr[smallest])
-        smallest = right;
+    if (r < n && a[r] < a[small])
+        small = r;
 
-    if (smallest != i)
+    if (small != i)
     {
-        swap(arr[i], arr[smallest]);
-        minHeapify(arr, n, smallest);
+        swap(a[i], a[small]);
+        minHeapify(a, n, small);
     }
 }
 
-void minHeapSort(vector<int> &arr)
+// Min Heap Sort
+void minHeapSort(vector<int>& a)
 {
-    int n = arr.size();
+    int n = a.size();
 
     for (int i = n / 2 - 1; i >= 0; i--)
-        minHeapify(arr, n, i);
+        minHeapify(a, n, i);
 
     for (int i = n - 1; i > 0; i--)
     {
-        swap(arr[0], arr[i]);
-        minHeapify(arr, i, 0);
+        swap(a[0], a[i]);
+        minHeapify(a, i, 0);
     }
 
-    reverse(arr.begin(), arr.end());
+    reverse(a.begin(), a.end());
 }
 
-//------------------ PRINT FUNCTION ------------------//
-void printArray(vector<int> arr)
+// Print Array
+void print(vector<int> a)
 {
-    for (int x : arr)
-        cout << x << " ";
+    for (int i = 0; i < a.size(); i++)
+        cout << a[i] << " ";
+
     cout << endl;
 }
 
-//------------------ MAIN ------------------//
 int main()
 {
     int n;
@@ -92,54 +94,47 @@ int main()
     cout << "Enter number of elements: ";
     cin >> n;
 
-    vector<int> original(n);
+    vector<int> a(n);
 
-    cout << "Enter " << n << " elements:\n";
-
+    cout << "Enter elements: ";
     for (int i = 0; i < n; i++)
-        cin >> original[i];
+        cin >> a[i];
 
-    cout << "\nOriginal Array:\n";
-    printArray(original);
+    vector<int> maxArray = a;
+    vector<int> minArray = a;
 
-    vector<int> maxHeapArray = original;
-    vector<int> minHeapArray = original;
+    cout << "\nOriginal Array: ";
+    print(a);
 
-    //---------------- MAX HEAP SORT ----------------//
-    auto startMax = high_resolution_clock::now();
+    // Max Heap Sort
+    auto start1 = high_resolution_clock::now();
 
-    maxHeapSort(maxHeapArray);
+    maxHeapSort(maxArray);
 
-    auto endMax = high_resolution_clock::now();
+    auto end1 = high_resolution_clock::now();
 
-    //---------------- MIN HEAP SORT ----------------//
-    auto startMin = high_resolution_clock::now();
+    // Min Heap Sort
+    auto start2 = high_resolution_clock::now();
 
-    minHeapSort(minHeapArray);
+    minHeapSort(minArray);
 
-    auto endMin = high_resolution_clock::now();
+    auto end2 = high_resolution_clock::now();
 
-    //---------------- DISPLAY OUTPUT ----------------//
+    cout << "\nMax Heap Sort:";
+    cout << "\nSorted Array: ";
+    print(maxArray);
 
-    cout << "\n========== MAX HEAP SORT ==========\n";
-    cout << "Sorted Array:\n";
-    printArray(maxHeapArray);
+    auto time1 = duration_cast<nanoseconds>(end1 - start1);
 
-    auto nanoMax = duration_cast<nanoseconds>(endMax - startMax);
-    auto microMax = duration_cast<microseconds>(endMax - startMax);
+    cout << "Time: " << time1.count() << " ns";
 
-    cout << "Nanoseconds  : " << nanoMax.count() << " ns\n";
-    cout << "Microseconds : " << microMax.count() << " us\n";
+    cout << "\n\nMin Heap Sort:";
+    cout << "\nSorted Array: ";
+    print(minArray);
 
-    cout << "\n========== MIN HEAP SORT ==========\n";
-    cout << "Sorted Array:\n";
-    printArray(minHeapArray);
+    auto time2 = duration_cast<nanoseconds>(end2 - start2);
 
-    auto nanoMin = duration_cast<nanoseconds>(endMin - startMin);
-    auto microMin = duration_cast<microseconds>(endMin - startMin);
-
-    cout << "Nanoseconds  : " << nanoMin.count() << " ns\n";
-    cout << "Microseconds : " << microMin.count() << " us\n";
+    cout << "Time: " << time2.count() << " ns";
 
     return 0;
 }
